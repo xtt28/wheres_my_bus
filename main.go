@@ -1,6 +1,7 @@
 package main
 
 func main() {
-	s := newServer(&dummyDataProvider{})
+	busSheetFetchData()
+	s := newServer(&busSheetDataProvider{})
 	s.serve(":8080")
 }

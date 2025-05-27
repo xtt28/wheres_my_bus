@@ -1,43 +1,35 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"errors"
 
-	"golang.org/x/net/html"
+	"github.com/nfx/go-htmltable"
 )
 
 const busSheet = "https://docs.google.com/spreadsheets/d/1S5v7kTbSiqV8GottWVi5tzpqLdTrEgWEY4ND4zvyV3o/edit"
 
-// https://www.zenrows.com/blog/golang-html-parser#parse-html-with-the-node-parsing-api-recommended
-func traverseTableCells(node *html.Node) []string {
-	values := []string{}
-	if node.Type == html.ElementNode && node.Data == "td" {
-		if node.FirstChild != nil && node.FirstChild.Type == html.TextNode {
-			values = append(values, node.FirstChild.Data)
+func busSheetFetchData() (busLocationSheetDTO, error) {
+	page, err := htmltable.NewFromURL(busSheet)
+	if err != nil {
+		return nil, err
+	}
+
+	if page.Len() < 1 {
+		return nil, errors.New("table not found on page")
+	}
+	table := page.Tables[0]
+	rows := table.Rows[2:]
+
+	dto := busLocationSheetDTO{}
+	
+	for _, row := range rows {
+		for i := 1; i < 5; i += 2 {
+			if row[i] == "" {
+				continue
+			}
+			dto[row[i]] = row[i + 1]
 		}
 	}
-
-	for c := node.FirstChild; c != nil; c = c.NextSibling {
-		values = append(values, traverseTableCells(c)...)
-	}
-
-	return values
-}
-
-func busSheetFetchData() (busLocationSheetDTO, error) {
-	res, err := http.Get(busSheet)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	doc, err := html.Parse(res.Body)
-	if err != nil {
-		return nil, err
-	}
-	cells := traverseTableCells(doc)
-
-	fmt.Println(cells)
-	return nil, nil
+	
+	return dto, nil
 }

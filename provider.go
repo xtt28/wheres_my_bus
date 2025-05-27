@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"log"
+	"time"
+)
 
 type busDataProvider interface {
 	fetch() (busLocationSheetDTO, error)
@@ -25,10 +28,11 @@ type busSheetDataProvider struct {
 }
 
 func (p *busSheetDataProvider) fetch() (busLocationSheetDTO, error) {
-	if time.Now().Before(p.getExpiry()) && p.data != nil {
+	if !p.getExpiry().IsZero() && time.Now().Before(p.getExpiry()) && p.data != nil {
 		return p.data, nil
 	}
 
+	log.Println("busSheetDataProvider: fetching data")
 	data, err := busSheetFetchData()
 	p.data = data
 	p.resetExpiry()

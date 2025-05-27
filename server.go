@@ -52,8 +52,8 @@ func newServer(provider busDataProvider) *server {
 	srv.mux = mux
 	srv.dataProvider = provider
 
-	mux.HandleFunc("GET /{$}", srv.handleGetBusData)
-	mux.HandleFunc("GET /ping", srv.handlePing)
+	mux.HandleFunc("GET /api/bus/positions", srv.handleGetBusData)
+	mux.HandleFunc("GET /api/ping", srv.handlePing)
 	
 	return &srv
 }
