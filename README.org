@@ -5,6 +5,10 @@
 
 REST API that tells you where your BCA bus is.
 
+** Production version
+
+This API is running at [[https://mybus.tntor.win/api/bus/positions]].
+
 ** Application design
 
 - Bus data is parsed from BCA bus location spreadsheet
