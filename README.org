@@ -1,0 +1,48 @@
+#+TITLE: Where's my bus?
+#+AUTHOR: xtt28
+
+** Project description
+
+REST API that tells you where your BCA bus is.
+
+** Application design
+
+- Bus data is parsed from BCA bus location spreadsheet
+  - Data is cached after being requested
+  - If it is between the hours of 12:25 and 12:50 or 4:05 and 4:30, cache TTL is
+    one minute
+  - Otherwise, cache TTL is five minutes
+- Served from JSON REST API
+
+** Endpoints
+
+*** ~GET /api/bus/positions~
+Sample response:
+#+BEGIN_SRC json
+  {
+      "buses": {
+          "Allendale": "A1",
+          "Alpine/Bergenfield": "C3"
+      },
+      "expiry": "2025-05-27T11:39:26.514963083Z"
+  }
+#+END_SRC
+
+** Run with Docker
+
+This heading assumes that you have cloned this repository and have Docker on your
+machine.
+
+First build your Docker image:
+#+BEGIN_SRC shell
+  docker build --tag bus .
+#+END_SRC
+
+Then run it (this example will run on port 4000):
+#+BEGIN_SRC shell
+  docker run -p 4000:4000 -e SERVICE_URL=:4000 bus
+#+END_SRC
+
+** License
+
+GNU Affero General Public License v3.0 or later - see LICENSE file for details
