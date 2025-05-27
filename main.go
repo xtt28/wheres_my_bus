@@ -1,6 +1,6 @@
 package main
 
 func main() {
-	s := newServer()
+	s := newServer(&dummyDataProvider{})
 	s.serve(":8080")
 }
