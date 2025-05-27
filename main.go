@@ -1,5 +1,6 @@
 package main
 
 func main() {
-	fetchData()
+	s := newServer()
+	s.serve(":8080")
 }
