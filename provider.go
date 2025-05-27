@@ -23,7 +23,7 @@ var _ busDataProvider = &busSheetDataProvider{}
 var _ busDataProvider = &dummyDataProvider{}
 
 type busSheetDataProvider struct {
-	data busLocationSheetDTO
+	data   busLocationSheetDTO
 	expiry time.Time
 }
 
@@ -48,7 +48,7 @@ func (p *busSheetDataProvider) resetExpiry() {
 		p.expiry = now.Add(1 * time.Minute)
 		return
 	}
-	
+
 	p.expiry = now.Add(5 * time.Minute)
 }
 
@@ -56,7 +56,7 @@ func (p *busSheetDataProvider) getExpiry() time.Time {
 	return p.expiry
 }
 
-type dummyDataProvider struct {}
+type dummyDataProvider struct{}
 
 func (p *dummyDataProvider) fetch() (busLocationSheetDTO, error) {
 	return busLocationSheetDTO{

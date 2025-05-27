@@ -21,15 +21,15 @@ func busSheetFetchData() (busLocationSheetDTO, error) {
 	rows := table.Rows[2:]
 
 	dto := busLocationSheetDTO{}
-	
+
 	for _, row := range rows {
 		for i := 1; i < 5; i += 2 {
 			if row[i] == "" {
 				continue
 			}
-			dto[row[i]] = row[i + 1]
+			dto[row[i]] = row[i+1]
 		}
 	}
-	
+
 	return dto, nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type server struct {
-	mux *http.ServeMux
+	mux          *http.ServeMux
 	dataProvider busDataProvider
 }
 
@@ -20,7 +20,7 @@ func (s *server) handleGetBusData(w http.ResponseWriter, r *http.Request) {
 	busData, err := s.dataProvider.fetch()
 	if err != nil {
 		resData := map[string]any{
-			"code": http.StatusInternalServerError,
+			"code":        http.StatusInternalServerError,
 			"description": "Could not fetch bus data. This incident has been logged.",
 		}
 		log.Printf("could not fetch bus data: %s\n", err)
@@ -28,9 +28,9 @@ func (s *server) handleGetBusData(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(resData)
 		return
 	}
-	
+
 	resData := map[string]any{
-		"buses": busData,
+		"buses":  busData,
 		"expiry": s.dataProvider.getExpiry(),
 	}
 	json.NewEncoder(w).Encode(resData)
@@ -62,6 +62,6 @@ func newServer(provider busDataProvider) *server {
 
 	mux.HandleFunc("GET /api/bus/positions", requestLogMiddleware(srv.handleGetBusData))
 	mux.HandleFunc("GET /api/ping", requestLogMiddleware(srv.handlePing))
-	
+
 	return &srv
 }
