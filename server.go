@@ -46,6 +46,13 @@ func (s *server) serve(url string) error {
 	return http.ListenAndServe(url, s.mux)
 }
 
+func requestLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		next(w, r)
+		log.Printf("%s :: %s %s / %s\n", r.RemoteAddr, r.Method, r.URL.Path, r.UserAgent())
+	})
+}
+
 func newServer(provider busDataProvider) *server {
 	srv := server{}
 
@@ -53,8 +60,8 @@ func newServer(provider busDataProvider) *server {
 	srv.mux = mux
 	srv.dataProvider = provider
 
-	mux.HandleFunc("GET /api/bus/positions", srv.handleGetBusData)
-	mux.HandleFunc("GET /api/ping", srv.handlePing)
+	mux.HandleFunc("GET /api/bus/positions", requestLogMiddleware(srv.handleGetBusData))
+	mux.HandleFunc("GET /api/ping", requestLogMiddleware(srv.handlePing))
 	
 	return &srv
 }
