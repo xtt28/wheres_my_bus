@@ -26,6 +26,7 @@ func (s *server) handleGetBusData(w http.ResponseWriter, r *http.Request) {
 		log.Printf("could not fetch bus data: %s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(resData)
+		return
 	}
 	
 	resData := map[string]any{
